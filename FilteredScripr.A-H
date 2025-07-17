@@ -1,0 +1,115 @@
+-- Crear GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "NoclipUI"
+ScreenGui.ResetOnSpawn = true
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+-- Marco principal
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 230, 0, 100)
+MainFrame.Position = UDim2.new(0.5, -115, 0.5, -50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.ZIndex = 1
+
+-- Bordes redondeados
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 8)
+
+-- Título (con color azul claro)
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Text = "Arbix Hub | Bypass Noclip"
+Title.TextColor3 = Color3.fromRGB(0, 170, 255)
+Title.TextSize = 16
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
+Title.ZIndex = 2
+
+-- Botón de Noclip
+local Button = Instance.new("TextButton")
+Button.Name = "NoclipButton"
+Button.Size = UDim2.new(0.8, 0, 0, 35)
+Button.Position = UDim2.new(0.1, 0, 0.55, 0)
+Button.BackgroundColor3 = Color3.fromRGB(10, 90, 200)
+Button.Text = "Noclip: OFF"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextSize = 16
+Button.Font = Enum.Font.Gotham
+Button.Parent = MainFrame
+Button.ZIndex = 2
+
+-- Bordes redondeados del botón
+local BtnCorner = Instance.new("UICorner", Button)
+BtnCorner.CornerRadius = UDim.new(0, 6)
+
+-- Función para mostrar pantalla de "bypass"
+local function showBypassScreen()
+    local bypassScreen = Instance.new("Frame")
+    bypassScreen.Name = "BypassScreen"
+    bypassScreen.BackgroundColor3 = Color3.new(0, 0, 0)
+    bypassScreen.Size = UDim2.new(1, 0, 1, 0)
+    bypassScreen.Position = UDim2.new(0, 0, 0, 0)
+    bypassScreen.ZIndex = 10
+    bypassScreen.Parent = ScreenGui
+
+    bypassScreen.ClipsDescendants = true
+
+    local bypassText = Instance.new("TextLabel")
+    bypassText.Name = "BypassText"
+    bypassText.Text = "Bypassing Noclip..."
+    bypassText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    bypassText.BackgroundTransparency = 1
+    bypassText.Font = Enum.Font.GothamBold
+    bypassText.TextSize = 24
+    bypassText.Size = UDim2.new(1, 0, 0, 40)
+    bypassText.Position = UDim2.new(0, 0, 0.3, 0)
+    bypassText.ZIndex = 11
+    bypassText.Parent = bypassScreen
+
+    local loadingBarBG = Instance.new("Frame")
+    loadingBarBG.Name = "LoadingBarBG"
+    loadingBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    loadingBarBG.Size = UDim2.new(0.6, 0, 0, 8)
+    loadingBarBG.Position = UDim2.new(0.2, 0, 0.5, 0)
+    loadingBarBG.ZIndex = 11
+    loadingBarBG.Parent = bypassScreen
+
+    local loadingBar = Instance.new("Frame")
+    loadingBar.Name = "LoadingBar"
+    loadingBar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    loadingBar.Size = UDim2.new(0, 0, 1, 0)
+    loadingBar.Position = UDim2.new(0, 0, 0, 0)
+    loadingBar.ZIndex = 12
+    loadingBar.Parent = loadingBarBG
+
+    local tweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(4, Enum.EasingStyle.Linear)
+    local goal = {Size = UDim2.new(1, 0, 1, 0)}
+    local tween = tweenService:Create(loadingBar, tweenInfo, goal)
+    tween:Play()
+end
+
+local noclipOn = false
+
+Button.MouseButton1Click:Connect(function()
+    if noclipOn then
+        -- Actualmente ON, pasar a OFF (por si quieres)
+        Button.Text = "Noclip: OFF"
+        noclipOn = false
+    else
+        -- Actualmente OFF, pasar a ON y mostrar pantalla
+        Button.Text = "Noclip: ON"
+        noclipOn = true
+        wait(0.5)
+        showBypassScreen()
+    end
+end)
