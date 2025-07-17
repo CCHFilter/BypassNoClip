@@ -21,7 +21,7 @@ MainFrame.ZIndex = 1
 local UICorner = Instance.new("UICorner", MainFrame)
 UICorner.CornerRadius = UDim.new(0, 8)
 
--- Título (con color azul claro)
+-- Título
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
 Title.Size = UDim2.new(1, 0, 0, 40)
@@ -47,69 +47,107 @@ Button.Font = Enum.Font.Gotham
 Button.Parent = MainFrame
 Button.ZIndex = 2
 
--- Bordes redondeados del botón
 local BtnCorner = Instance.new("UICorner", Button)
 BtnCorner.CornerRadius = UDim.new(0, 6)
 
--- Función para mostrar pantalla de "bypass"
+-- Mostrar pantalla de bypass
 local function showBypassScreen()
-    local bypassScreen = Instance.new("Frame")
-    bypassScreen.Name = "BypassScreen"
-    bypassScreen.BackgroundColor3 = Color3.new(0, 0, 0)
-    bypassScreen.Size = UDim2.new(1, 0, 1, 0)
-    bypassScreen.Position = UDim2.new(0, 0, 0, 0)
-    bypassScreen.ZIndex = 10
-    bypassScreen.Parent = ScreenGui
+	local bypassScreen = Instance.new("Frame")
+	bypassScreen.Name = "BypassScreen"
+	bypassScreen.BackgroundColor3 = Color3.new(0, 0, 0)
+	bypassScreen.Size = UDim2.new(1, 0, 1, 0)
+	bypassScreen.Position = UDim2.new(0, 0, 0, 0)
+	bypassScreen.ZIndex = 10
+	bypassScreen.Parent = ScreenGui
+	bypassScreen.ClipsDescendants = true
 
-    bypassScreen.ClipsDescendants = true
+	local bypassText = Instance.new("TextLabel")
+	bypassText.Name = "BypassText"
+	bypassText.Text = "Bypassing Noclip..."
+	bypassText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	bypassText.BackgroundTransparency = 1
+	bypassText.Font = Enum.Font.GothamBold
+	bypassText.TextSize = 24
+	bypassText.Size = UDim2.new(1, 0, 0, 40)
+	bypassText.Position = UDim2.new(0, 0, 0.23, 0)
+	bypassText.ZIndex = 11
+	bypassText.Parent = bypassScreen
 
-    local bypassText = Instance.new("TextLabel")
-    bypassText.Name = "BypassText"
-    bypassText.Text = "Bypassing Noclip..."
-    bypassText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    bypassText.BackgroundTransparency = 1
-    bypassText.Font = Enum.Font.GothamBold
-    bypassText.TextSize = 24
-    bypassText.Size = UDim2.new(1, 0, 0, 40)
-    bypassText.Position = UDim2.new(0, 0, 0.3, 0)
-    bypassText.ZIndex = 11
-    bypassText.Parent = bypassScreen
+	local loadingBarBG = Instance.new("Frame")
+	loadingBarBG.Name = "LoadingBarBG"
+	loadingBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	loadingBarBG.Size = UDim2.new(0.6, 0, 0, 8)
+	loadingBarBG.Position = UDim2.new(0.2, 0, 0.5, 0)
+	loadingBarBG.ZIndex = 11
+	loadingBarBG.Parent = bypassScreen
 
-    local loadingBarBG = Instance.new("Frame")
-    loadingBarBG.Name = "LoadingBarBG"
-    loadingBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    loadingBarBG.Size = UDim2.new(0.6, 0, 0, 8)
-    loadingBarBG.Position = UDim2.new(0.2, 0, 0.5, 0)
-    loadingBarBG.ZIndex = 11
-    loadingBarBG.Parent = bypassScreen
+	local loadingBar = Instance.new("Frame")
+	loadingBar.Name = "LoadingBar"
+	loadingBar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	loadingBar.Size = UDim2.new(0, 0, 1, 0)
+	loadingBar.Position = UDim2.new(0, 0, 0, 0)
+	loadingBar.ZIndex = 12
+	loadingBar.Parent = loadingBarBG
 
-    local loadingBar = Instance.new("Frame")
-    loadingBar.Name = "LoadingBar"
-    loadingBar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-    loadingBar.Size = UDim2.new(0, 0, 1, 0)
-    loadingBar.Position = UDim2.new(0, 0, 0, 0)
-    loadingBar.ZIndex = 12
-    loadingBar.Parent = loadingBarBG
-
-    local tweenService = game:GetService("TweenService")
-    local tweenInfo = TweenInfo.new(4, Enum.EasingStyle.Linear)
-    local goal = {Size = UDim2.new(1, 0, 1, 0)}
-    local tween = tweenService:Create(loadingBar, tweenInfo, goal)
-    tween:Play()
+	local tweenService = game:GetService("TweenService")
+	local tweenInfo = TweenInfo.new(4, Enum.EasingStyle.Linear)
+	local goal = {Size = UDim2.new(1, 0, 1, 0)}
+	local tween = tweenService:Create(loadingBar, tweenInfo, goal)
+	tween:Play()
 end
 
+-- Godmode
+local function activateGodmode()
+	local player = game:GetService("Players").LocalPlayer
+	local char = player.Character or player.CharacterAdded:Wait()
+	local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+	if humanoid then
+		humanoid.Name = "GodmodeHumanoid"
+		humanoid.BreakJointsOnDeath = false
+		humanoid.Health = math.huge
+	end
+end
+
+-- Eliminar inventario (mochila y mano)
+local function removeInventory()
+	local player = game:GetService("Players").LocalPlayer
+
+	for _, tool in ipairs(player.Backpack:GetChildren()) do
+		if tool:IsA("Tool") then
+			tool:Destroy()
+		end
+	end
+
+	local char = player.Character
+	if char then
+		for _, tool in ipairs(char:GetChildren()) do
+			if tool:IsA("Tool") then
+				tool:Destroy()
+			end
+		end
+	end
+end
+
+-- Estado
 local noclipOn = false
 
+-- Evento botón
 Button.MouseButton1Click:Connect(function()
-    if noclipOn then
-        -- Actualmente ON, pasar a OFF (por si quieres)
-        Button.Text = "Noclip: OFF"
-        noclipOn = false
-    else
-        -- Actualmente OFF, pasar a ON y mostrar pantalla
-        Button.Text = "Noclip: ON"
-        noclipOn = true
-        wait(0.5)
-        showBypassScreen()
-    end
+	if noclipOn then
+		Button.Text = "Noclip: OFF"
+		noclipOn = false
+	else
+		Button.Text = "Noclip: ON"
+		noclipOn = true
+
+		task.delay(0.5, function()
+			showBypassScreen()
+			removeInventory()
+		end)
+
+		task.delay(0.7, function()
+			activateGodmode()
+		end)
+	end
 end)
